@@ -1,4 +1,4 @@
-package com.example.gpow.androidkeylogger;
+package com.gpow.androidkeylogger;
 
 import android.content.Context;
 import android.content.SharedPreferences;

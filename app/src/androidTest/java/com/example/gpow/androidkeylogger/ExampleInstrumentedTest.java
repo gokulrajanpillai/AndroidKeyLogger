@@ -1,4 +1,4 @@
-package com.example.gpow.androidkeylogger;
+package com.gpow.androidkeylogger;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.gpow.androidkeylogger", appContext.getPackageName());
+        assertEquals("com.gpow.androidkeylogger", appContext.getPackageName());
     }
 }

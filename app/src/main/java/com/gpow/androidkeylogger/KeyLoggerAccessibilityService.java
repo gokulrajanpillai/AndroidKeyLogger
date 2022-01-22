@@ -1,4 +1,4 @@
-package com.example.gpow.androidkeylogger;
+package com.gpow.androidkeylogger;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
