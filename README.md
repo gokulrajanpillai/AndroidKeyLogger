@@ -11,3 +11,5 @@ TurnOn Settings>Accessibility>AndroidKeyLogger (Services section)
 Close and open the app again to see the typed text contents.
 
 Its a work in progress, so all suggestions and pull requests are welcome :)
+
+<a href="https://www.buymeacoffee.com/grpillai" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
