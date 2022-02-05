@@ -2,7 +2,7 @@
 Does something straight forward, logs everything you type on your phone. Saves it locally on your phone itself. No hazzle no dazzle :)
 
 
-Build the app manually with AndroidStudio or get it here: https://drive.google.com/file/d/1aCfpDIt9npF0bODJQDsHtVS2wi84xJzU/view?usp=sharing.
+Build the app manually with AndroidStudio or get it here: https://play.google.com/store/apps/details?id=com.gpow.androidkeylogger
 
 Install the app.
 
