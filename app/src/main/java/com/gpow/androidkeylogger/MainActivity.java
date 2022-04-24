@@ -21,6 +21,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         updateText();
+        setupDisclaimer();
+        setupRefreshButton();
+    }
+
+
+    private void setupDisclaimer() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String agreement = preferences.getString("KeyLogger.TermsAgreed", "false");
+        if (agreement.equals("false")) {
+            // Unhide disclaimer window
+            View disclaimerWindow = (View) findViewById(R.id.disclaimerWindow);
+            disclaimerWindow.setVisibility(View.VISIBLE);
+
+            // Configure DisclaimerAgreeBtn
+            Button disclaimerAgreeButton = (Button) findViewById(R.id.disclaimerAgreeBtn);
+            disclaimerAgreeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Hide disclaimer window
+                    View disclaimerWindow = (View) findViewById(R.id.disclaimerWindow);
+                    disclaimerWindow.setVisibility(View.GONE);
+
+                    // Saved terms agreed
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("KeyLogger.TermsAgreed", "true");
+                    editor.apply();
+                }
+            });
+        }
+    }
+
+
+    private void setupRefreshButton() {
         Button refreshButton = (Button)findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
