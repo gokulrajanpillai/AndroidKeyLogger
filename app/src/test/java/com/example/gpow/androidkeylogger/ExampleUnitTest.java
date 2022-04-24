@@ -1,4 +1,4 @@
-package com.example.gpow.androidkeylogger;
+package com.gpow.androidkeylogger;
 
 import org.junit.Test;
 
