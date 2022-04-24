@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">AndroidKeyLogger</string>
+    <string name="disclaimer_text">
+        YOU ARE SOLELY RESPONSIBLE FOR ANYTHING YOU DO WITH THIS APPLICATION. THE DEVELOPERS OF THIS PROJECT HAVE ZERO LIABILITY.
+
+        PLEASE READ THE DETAILED EULA FROM HERE:
+        https://docs.google.com/document/d/1VWBWNvIdpYYmQhfTzhyUhcUHBCgi93eOkTNioxhKaWY/edit?usp=sharing
+
+        The information provided by Keylogger (“we,” “us”, or “our”) on our mobile application is for general informational purposes only.
+        All information on is provided in good faith, however we make no representation or warranty of any kind, express or implied,
+        regarding the accuracy, adequacy, validity, reliability, availability or completeness of any information on our mobile application.
+
+        UNDER NO CIRCUMSTANCE SHALL KEYLOGGER OR ITS DEVELOPERS HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED AS A
+        RESULT OF THE USE OF OR RELIANCE ON ANY INFORMATION PROVIDED ON THIS APPLICATION.
+        YOUR USE OF AND YOUR RELIANCE ON ANY INFORMATION ON IS SOLELY AT YOUR OWN RISK.
+
+
+    </string>
+    <string name="disclaimer_button">
+        By pressing this button I have read, understood and agree to use the application under these terms</string>
 </resources>
