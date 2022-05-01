@@ -2,7 +2,13 @@
 <resources>
     <color name="white">#fafafa</color>
     <color name="black">#000002</color>
-    <color name="colorPrimary">#5858f4</color>
-    <color name="colorPrimaryDark">#0000ff</color>
+    <color name="grey">#666670</color>
+    <color name="code_green">#19C519</color>
+<!--    <color name="colorPrimary">#5858f4</color>-->
+<!--    <color name="colorPrimaryDark">#0000ff</color>-->
+<!--    <color name="colorPrimary">#DCCEB8</color>-->
+<!--    <color name="colorPrimaryDark">#593806</color>-->
+    <color name="colorPrimary">#5C5C5C</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#0a0ac2</color>
 </resources>

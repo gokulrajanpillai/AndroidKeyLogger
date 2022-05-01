@@ -1,22 +1,29 @@
 <resources>
     <string name="app_name">AndroidKeyLogger</string>
-    <string name="disclaimer_tldr_text">
-        YOU ARE SOLELY RESPONSIBLE FOR ANYTHING YOU DO WITH THIS APPLICATION. THE DEVELOPERS OF THIS APPLICATION HAVE NO LIABILITY WHATSOEVER.
-    </string>
-    <string name="disclaimer_eula_text">
-        PLEASE READ THE DETAILED END USER LICENSE AGREEMENT HERE:
-        https://docs.google.com/document/d/1VWBWNvIdpYYmQhfTzhyUhcUHBCgi93eOkTNioxhKaWY/edit?usp=sharing
-    </string>
     <string name="disclaimer_text">
+        KEYLOGGER IS AN OPENSOURCE PROJECT MAINTAINED ON GITHUB. WE DO NOT COPY OR PROCESS ANY USER DATA. \n\n
+        ALL THE SERVICES THAT THE APP PROVIDES ARE UTILISING THE LOCAL RESOURCES OF YOUR PHONE. \n
+        YOUR DATA STAYS ON YOUR PHONE. PERIOD. \n\n
+
+        YOU ARE SOLELY RESPONSIBLE FOR ANYTHING YOU DO WITH THIS APPLICATION. THE DEVELOPERS OF THIS APPLICATION HAVE NO LIABILITY WHATSOEVER. \n\n
+
+        PLEASE READ THE DETAILED END USER LICENSE AGREEMENT HERE:
+        https://docs.google.com/document/d/1VWBWNvIdpYYmQhfTzhyUhcUHBCgi93eOkTNioxhKaWY/edit?usp=sharing \n\n
+
         The information provided by Keylogger (“we,” “us”, or “our”) on our mobile application is for general informational purposes only.
         All information on is provided in good faith, however we make no representation or warranty of any kind, express or implied,
-        regarding the accuracy, adequacy, validity, reliability, availability or completeness of any information on our mobile application.
+        regarding the accuracy, adequacy, validity, reliability, availability or completeness of any information on our mobile application. \n\n
 
         UNDER NO CIRCUMSTANCE SHALL KEYLOGGER OR ITS DEVELOPERS HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED AS A
         RESULT OF THE USE OF OR RELIANCE ON ANY INFORMATION PROVIDED ON THIS APPLICATION.
-        YOUR USE OF AND YOUR RELIANCE ON ANY INFORMATION ON IS SOLELY AT YOUR OWN RISK.
-    </string>
-    <string name="disclaimer_agree_text">
-        By pressing the below button you are confirming that you have read, understood and agree to use the application under these terms</string>
+        YOUR USE OF AND YOUR RELIANCE ON ANY INFORMATION ON IS SOLELY AT YOUR OWN RISK. \n\n
+
+        By pressing the below button you are confirming that you have read, understood and agree to use the application under these terms \n\n</string>
     <string name="disclaimer_button">I AGREE</string>
+
+    <string name="accessibility_perm">
+        Keylogger must be enabled under Accessibility settings to start logging\n\n
+        Tap here to go to settings and enable it \n
+        (tap anywhere outside to ignore and continue)
+    </string>
 </resources>
