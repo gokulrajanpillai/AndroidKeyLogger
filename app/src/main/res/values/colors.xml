@@ -11,4 +11,6 @@
     <color name="colorPrimary">#5C5C5C</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#0a0ac2</color>
+    <color name="colorButtonText">#fafafa</color>
+    <color name="colorButtonBackground">#5C5C5C</color>
 </resources>

@@ -8,6 +8,7 @@
     android:weightSum="10"
     tools:context=".MainActivity">
 
+    <!-- Accessibility Check View -->
     <LinearLayout
         android:id="@+id/accessibility_popup"
         android:layout_width="match_parent"
@@ -37,6 +38,7 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Disclaimer View -->
     <LinearLayout
         android:id="@+id/disclaimerWindow"
         android:layout_width="match_parent"
@@ -79,15 +81,46 @@
             android:textSize="30dp"
             android:text="@string/disclaimer_button"/>
     </LinearLayout>
-    <Button
-        android:layout_margin="8dp"
-        android:id="@+id/refreshButton"
+
+    <!-- Main View -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white"
-        android:text="Refresh"/>
+        android:layout_marginTop="8dp"
+        android:weightSum="3"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="4dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Refresh"/>
+        <Button
+            android:id="@+id/exportButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Export"/>
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="Clear"/>
+    </LinearLayout>
     <ScrollView
         android:layout_margin="8dp"
         android:layout_width="match_parent"

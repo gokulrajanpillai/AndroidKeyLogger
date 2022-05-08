@@ -6,23 +6,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import static com.gpow.androidkeylogger.FileOperations.writeTextToFile;
 
 public class MainActivity extends AppCompatActivity {
 
     private View popupAccessibilityView;
     private View changeAccessibilityView;
     private Button refreshButton;
+    private Button exportButton;
+    private Button clearButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         checkForAccessibility();
+        updateText();
     }
 
     void checkForAccessibility() {
@@ -117,13 +130,79 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup Refresh Button
         refreshButton = (Button)findViewById(R.id.refreshButton);
+//        setOnTouchEffect(refreshButton);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateText();
+                Toast.makeText(MainActivity.this, "Content refreshed!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Setup Export Button
+        exportButton = (Button)findViewById(R.id.exportButton);
+//        setOnTouchEffect(exportButton);
+        exportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exportText();
+                // shareFile(filepath);
+            }
+        });
+
+        // Setup Clear Button
+        clearButton = (Button)findViewById(R.id.clearButton);
+//        setOnTouchEffect(clearButton);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exportText();
+                clearText();
             }
         });
     }
+
+
+    private void exportText() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
+        String currentDatetime = sdf.format(new Date());
+        String filepath = getExternalFilesDir("/").getAbsolutePath() + "/keylogger_text_" + currentDatetime + ".txt";
+        writeTextToFile(filepath, loadContents());
+        Toast.makeText(MainActivity.this, "File exported to " + filepath,
+                Toast.LENGTH_LONG).show();
+    }
+
+
+    private void clearText() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("KeyLogger", "");
+        editor.apply();
+        updateText();
+        Toast.makeText(MainActivity.this, "Text cleared!",
+                Toast.LENGTH_SHORT).show();
+    }
+//    private void setOnTouchEffect(Button button) {
+//
+//        button.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                Button btn = (Button)v;
+//
+//                if (event.getActionMasked() == MotionEvent.ACTION_BUTTON_PRESS) {
+//                    btn.setTextColor(getResources().getColor(R.color.colorButtonBackground));
+//                    btn.setBackgroundColor(getResources().getColor(R.color.colorButtonText));
+//                }
+//                else if (event.getActionMasked() == MotionEvent.ACTION_BUTTON_RELEASE) {
+//                    btn.setTextColor(getResources().getColor(R.color.colorButtonText));
+//                    btn.setBackgroundColor(getResources().getColor(R.color.colorButtonBackground));
+//                }
+//                return false;
+//            }
+//        });
+//    }
 
     private void updateText() {
         TextView textView = findViewById(R.id.logs);
@@ -140,5 +219,24 @@ public class MainActivity extends AppCompatActivity {
         return logs;
     }
 
+    /*
+        Intent operations
+    */
 
+
+    private void shareFile(String filepath) {
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        File fileWithinMyDir = new File(filepath);
+
+        if(fileWithinMyDir.exists()) {
+            intentShareFile.setType("application/pdf");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filepath));
+
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                    "Sharing File...");
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+
+            startActivity(Intent.createChooser(intentShareFile, "Share File"));
+        }
+    }
 }
