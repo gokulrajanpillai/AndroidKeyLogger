@@ -35,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private Button refreshButton;
     private Button exportButton;
     private Button clearButton;
+    private TextView logsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        updateText();
         setupDisclaimer();
         setupView();
 
@@ -161,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
                 clearText();
             }
         });
+
+        logsTextView = findViewById(R.id.logsTextView);
+        updateText();
     }
 
 
@@ -205,8 +208,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private void updateText() {
-        TextView textView = findViewById(R.id.logs);
-        textView.setText("Logs: " + loadContents());
+        logsTextView.setText("Logs: " + loadContents());
     }
 
     public static Context getContext() {
