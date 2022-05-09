@@ -124,7 +124,7 @@
     <ScrollView
         android:layout_margin="8dp"
         android:layout_width="match_parent"
-        android:layout_weight="9"
+        android:layout_weight="8"
         android:background="@color/white"
         android:layout_height="0dp">
         <TextView
@@ -141,4 +141,15 @@
             android:background="@color/white"
             android:text="TextView" />
     </ScrollView>
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
 </LinearLayout>
