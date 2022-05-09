@@ -6,8 +6,8 @@ android {
         applicationId "com.gpow.androidkeylogger"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 5
-        versionName "2.2.0"
+        versionCode 7
+        versionName "2.2.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
