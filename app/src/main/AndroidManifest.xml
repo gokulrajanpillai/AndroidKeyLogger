@@ -21,6 +21,11 @@
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
         </service>
+
+        <!-- AdMob setup -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2141636748143438~3947810648"/>
     </application>
 
 </manifest>
