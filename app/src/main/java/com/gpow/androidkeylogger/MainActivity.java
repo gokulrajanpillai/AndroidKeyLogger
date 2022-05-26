@@ -7,22 +7,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
@@ -43,7 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private Button refreshButton;
     private Button exportButton;
     private Button clearButton;
+
     private AdView mAdView;
+    private AdRequest mAdRequest;
+    private int REFRESH_RATE_IN_SECONDS = 5;
+    private final Handler refreshHandler = new Handler();
+    private final Runnable refreshRunnable = new RefreshRunnable();
+
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private Toast toast = null;
@@ -58,22 +70,69 @@ public class MainActivity extends AppCompatActivity {
         setupView();
 
         checkForAccessibility();
+        setUpAdView();
+    }
+
+    @Override
+    protected void onRestart() {
+        mAdView.resume();
+        super.onRestart();
+        checkForAccessibility();
+        updateText();
+    }
+
+    @Override
+    public void onPause() {
+        // Pause the AdView.
+        mAdView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        // Destroy the AdView.
+        mAdView.destroy();
+        super.onDestroy();
+    }
+
+
+    /* Setup AdView */
+    private void setUpAdView() {
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        checkForAccessibility();
-        updateText();
+        mAdView = findViewById(R.id.adView);
+        mAdRequest = new AdRequest.Builder().build();
+        mAdView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+
+                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                param.weight = 8.0f;
+                swipeRefreshLayout.setLayoutParams(param);
+                mAdView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+
+                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                param.weight = 9.0f;
+                swipeRefreshLayout.setLayoutParams(param);
+                mAdView.setVisibility(View.GONE);
+
+                refreshHandler.removeCallbacks(refreshRunnable);
+                refreshHandler.postDelayed(refreshRunnable, REFRESH_RATE_IN_SECONDS * 1000);
+            }
+        });
+        mAdView.loadAd(mAdRequest);
     }
 
     private void checkForAccessibility() {
@@ -274,6 +333,13 @@ public class MainActivity extends AppCompatActivity {
             intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
 
             startActivity(Intent.createChooser(intentShareFile, "Share File"));
+        }
+    }
+
+    private class RefreshRunnable implements Runnable {
+        @Override
+        public void run() {
+            mAdView.loadAd(mAdRequest);
         }
     }
 }
