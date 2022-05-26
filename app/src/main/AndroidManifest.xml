@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gpow.androidkeylogger">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<!--    <uses-permission android:name="android.permission.INTERNET" />-->
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +20,11 @@
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
         </service>
+
+        <!-- AdMob setup -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2141636748143438~3947810648"/>
     </application>
 
 </manifest>
