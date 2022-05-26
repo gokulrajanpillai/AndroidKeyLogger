@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private AdView mAdView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private Toast toast = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         updateText();
     }
 
-    void checkForAccessibility() {
+    private void checkForAccessibility() {
 
         if (!isAccessibilityServiceEnabled(this, KeyLoggerAccessibilityService.class)) {
             popupAccessibilityView.setVisibility(View.VISIBLE);
@@ -134,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 updateText();
-                Toast.makeText(MainActivity.this, "Content refreshed!",
-                        Toast.LENGTH_SHORT).show();
+                showToast("Content refreshed!");
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -165,8 +166,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateText();
-                Toast.makeText(MainActivity.this, "Content refreshed!",
-                        Toast.LENGTH_SHORT).show();
+                showToast("Content refreshed!");
             }
         });
 
@@ -199,8 +199,7 @@ public class MainActivity extends AppCompatActivity {
         String currentDatetime = sdf.format(new Date());
         String filepath = getExternalFilesDir("/").getAbsolutePath() + "/keylogger_text_" + currentDatetime + ".txt";
         writeTextToFile(filepath, loadContents());
-        Toast.makeText(MainActivity.this, "File exported to " + filepath,
-                Toast.LENGTH_LONG).show();
+        showToast("File exported to ");
     }
 
 
@@ -210,8 +209,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("KeyLogger", "");
         editor.apply();
         updateText();
-        Toast.makeText(MainActivity.this, "Text cleared!",
-                Toast.LENGTH_SHORT).show();
+        showToast("Text cleared!");
+    }
+
+
+    private void showToast(String msg) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG);
+        toast.show();
     }
 //    private void setOnTouchEffect(Button button) {
 //
