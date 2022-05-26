@@ -121,26 +121,33 @@
             android:textColor="@color/white"
             android:text="Clear"/>
     </LinearLayout>
-    <ScrollView
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_weight="8"
         android:background="@color/white"
         android:layout_height="0dp">
-        <TextView
-            android:id="@+id/logs"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:background="@color/white"
-            android:text="TextView" />
-    </ScrollView>
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/logs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:textAlignment="textStart"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:background="@color/white"
+                android:text="TextView" />
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"

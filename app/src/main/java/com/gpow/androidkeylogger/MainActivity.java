@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MotionEvent;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Button exportButton;
     private Button clearButton;
     private AdView mAdView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +128,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupView() {
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateText();
+                Toast.makeText(MainActivity.this, "Content refreshed!",
+                        Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         // Setup ignore accessibility view
         popupAccessibilityView = findViewById(R.id.accessibility_popup);
