@@ -5,8 +5,10 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private View popupAccessibilityView;
     private View changeAccessibilityView;
-    private Button refreshButton;
+    private Button logsButton;
     private Button exportButton;
     private Button clearButton;
 
@@ -218,16 +220,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup Refresh Button
-        refreshButton = (Button)findViewById(R.id.refreshButton);
-//        setOnTouchEffect(refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateText();
-                showToast("Content refreshed!");
-            }
-        });
+//        // Setup Refresh Button
+//          TODO: Either create a list view for all the log files or find a way to redirect to file manager
+//        logsButton = (Button)findViewById(R.id.logsButton);
+////        setOnTouchEffect(refreshButton);
+//        logsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openLogPath();
+//            }
+//        });
 
         // Setup Export Button
         exportButton = (Button)findViewById(R.id.exportButton);
@@ -258,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         String currentDatetime = sdf.format(new Date());
         String filepath = getExternalFilesDir("/").getAbsolutePath() + "/keylogger_text_" + currentDatetime + ".txt";
         writeTextToFile(filepath, loadContents());
-        showToast("File exported to ");
+        showToast("File exported to " + filepath);
     }
 
 
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("KeyLogger", "");
         editor.apply();
         updateText();
-        showToast("Text cleared!");
+//        showToast("Text cleared!");
     }
 
 
@@ -305,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setText("Logs: " + loadContents());
     }
 
+
     public static Context getContext() {
         return getContext();
     }
@@ -318,6 +321,64 @@ public class MainActivity extends AppCompatActivity {
     /*
         Intent operations
     */
+
+//
+//    public void openLogPath() {
+//
+//        try {
+//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            String path1 = getExternalFilesDir("/").getAbsolutePath() + "/Android/data/com.gpow.androidkeylogger/files/";
+//            String path = getPackageManager().getPackageInfo(getPackageName(), 0).applicationInfo.dataDir;
+//            String path2 = getApplicationInfo().dataDir;
+//            Uri uri = Uri.parse(path);
+//            intent.setDataAndType(uri, "*/*");
+//            startActivity(intent);
+//        }
+//        catch (Exception e) {
+//            Log.e("keyL", "Error occured when opening log path");
+//        }
+//    }
+//
+//    public void openLogPath()
+//    {
+//        // location = "/sdcard/my_folder";
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        Uri mydir = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
+//        intent.setDataAndType(mydir,"application/*");    // or use */*
+//        startActivity(intent);
+//    }
+
+//    private void newOpener() {
+//        Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
+//        Uri uri = Uri.parse(Environment.getDownloadCacheDirectory().getPath().toString());
+//        chooser.addCategory(Intent.CATEGORY_OPENABLE);
+//        chooser.setDataAndType(uri, "*/*");
+//// startActivity(chooser);
+//        try {
+//            startActivityForResult(chooser, SELECT_FILE);
+//        }
+//        catch (android.content.ActivityNotFoundException ex)
+//        {
+//            Toast.makeText(this, "Please install a File Manager.",
+//                    Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+//    private void openLogPath() {
+//        String path = getExternalFilesDir("/").getAbsolutePath();
+//        Uri selectedUri = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setDataAndType(selectedUri, "resource/folder");
+//
+//        if (intent.resolveActivityInfo(getPackageManager(), 0) != null)
+//        {
+//            startActivity(intent);
+//        }
+//        else
+//        {
+//            showToast("Could not find explorer app installed on the device");
+//        }
+//    }
 
 
     private void shareFile(String filepath) {
