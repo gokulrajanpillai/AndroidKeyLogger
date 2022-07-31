@@ -27,13 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.facebook.ads.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private Button clearButton;
 
     private AdView mAdView;
-    private AdRequest mAdRequest;
+//    private AdRequest mAdRequest;
     private int REFRESH_RATE_IN_SECONDS = 5;
     private final Handler refreshHandler = new Handler();
-    private final Runnable refreshRunnable = new RefreshRunnable();
+//    private final Runnable refreshRunnable = new RefreshRunnable();
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -72,12 +66,14 @@ public class MainActivity extends AppCompatActivity {
         setupView();
 
         checkForAccessibility();
+
         setUpAdView();
+
     }
 
     @Override
     protected void onRestart() {
-        mAdView.resume();
+//        mAdView.resume();
         super.onRestart();
         checkForAccessibility();
         updateText();
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         // Pause the AdView.
-        mAdView.pause();
+//        mAdView.pause();
         super.onPause();
     }
 
@@ -101,40 +97,47 @@ public class MainActivity extends AppCompatActivity {
     /* Setup AdView */
     private void setUpAdView() {
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+        // Instantiate an AdView object.
+        // NOTE: The placement ID from the Facebook Monetization Manager identifies your App.
+        // To get test ads, add IMG_16_9_APP_INSTALL# to your placement id. Remove this when your app is ready to serve real ads.
+        mAdView = new AdView(this, "IMG_16_9_APP_INSTALL#592578959156779_592661299148545", AdSize.BANNER_HEIGHT_50);
+
+        // Find the Ad Container
+        LinearLayout adContainer = (LinearLayout) findViewById(R.id.banner_container);
+
+        // Add the ad view to your activity layout
+        adContainer.addView(mAdView);
+
+        AdListener adListener = new AdListener() {
             @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        mAdView = findViewById(R.id.adView);
-        mAdRequest = new AdRequest.Builder().build();
-        mAdView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-
-                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-                param.weight = 8.0f;
-                swipeRefreshLayout.setLayoutParams(param);
-                mAdView.setVisibility(View.VISIBLE);
+            public void onError(Ad ad, AdError adError) {
+                // Ad error callback
+                Toast.makeText(
+                                MainActivity.this,
+                                "Error: " + adError.getErrorMessage(),
+                                Toast.LENGTH_LONG)
+                        .show();
             }
 
             @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-
-                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-                param.weight = 9.0f;
-                swipeRefreshLayout.setLayoutParams(param);
-                mAdView.setVisibility(View.GONE);
-
-                refreshHandler.removeCallbacks(refreshRunnable);
-                refreshHandler.postDelayed(refreshRunnable, REFRESH_RATE_IN_SECONDS * 1000);
+            public void onAdLoaded(Ad ad) {
+                // Ad loaded callback
             }
-        });
-        mAdView.loadAd(mAdRequest);
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Ad clicked callback
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Ad impression logged callback
+            }
+        };
+
+//        AdSettings.addTestDevice("c41dde11-89f0-4e71-8c5c-b77dc7f38bc3");
+        // Request an ad with listener
+        mAdView.loadAd(mAdView.buildLoadAdConfig().withAdListener(adListener).build());
     }
 
     private void checkForAccessibility() {
@@ -397,10 +400,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class RefreshRunnable implements Runnable {
-        @Override
-        public void run() {
-            mAdView.loadAd(mAdRequest);
-        }
-    }
+//    private class RefreshRunnable implements Runnable {
+//        @Override
+//        public void run() {
+//            mAdView.loadAd();
+//        }
+//    }
 }
