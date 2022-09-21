@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,12 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.ironsource.mediationsdk.ISBannerSize;
+import com.ironsource.mediationsdk.IronSource;
+import com.ironsource.mediationsdk.IronSourceBannerLayout;
+import com.ironsource.mediationsdk.integration.IntegrationHelper;
+import com.ironsource.mediationsdk.logger.IronSourceError;
+import com.ironsource.mediationsdk.sdk.BannerListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private AdView mAdView;
     private AdRequest mAdRequest;
     private int REFRESH_RATE_IN_SECONDS = 5;
-    private final Handler refreshHandler = new Handler();
-    private final Runnable refreshRunnable = new RefreshRunnable();
+//    private final Handler refreshHandler = new Handler();
+//    private final Runnable refreshRunnable = new RefreshRunnable();
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -72,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
         setupView();
 
         checkForAccessibility();
-        setUpAdView();
+//        setUpAdView();
+        setupIronSourceAdView();
     }
 
     @Override
@@ -84,10 +92,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    @Override
     public void onPause() {
         // Pause the AdView.
         mAdView.pause();
         super.onPause();
+        IronSource.onResume(this);
     }
 
     @Override
@@ -99,43 +114,89 @@ public class MainActivity extends AppCompatActivity {
 
 
     /* Setup AdView */
-    private void setUpAdView() {
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+    private void setupIronSourceAdView() {
+        /**
+         *Ad Units should be in the type of IronSource.Ad_Unit.AdUnitName, example
+         */
+        IronSource.init(this, "168b70cc5", IronSource.AD_UNIT.OFFERWALL, IronSource.AD_UNIT.INTERSTITIAL, IronSource.AD_UNIT.REWARDED_VIDEO, IronSource.AD_UNIT.BANNER);
+        IntegrationHelper.validateIntegration(this);
+        final LinearLayout bannerContainer = findViewById(R.id.bannerContainer);
+        IronSourceBannerLayout banner = IronSource.createBanner(this, ISBannerSize.BANNER);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        bannerContainer.addView(banner, 0, layoutParams);
+        banner.setBannerListener(new BannerListener() {
             @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            public void onBannerAdLoaded() {
+            // Called after a banner ad has been successfully loaded
+            }
+            @Override
+            public void onBannerAdLoadFailed(IronSourceError error) {
+            // Called after a banner has attempted to load an ad but failed.
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bannerContainer.removeAllViews();
+                    }
+                });
+            }
+            @Override
+            public void onBannerAdClicked() {
+            // Called after a banner has been clicked.
+            }
+            @Override
+            public void onBannerAdScreenPresented() {
+            // Called when a banner is about to present a full screen content.
+            }
+            @Override
+            public void onBannerAdScreenDismissed() {
+            // Called after a full screen content has been dismissed
+            }
+            @Override
+            public void onBannerAdLeftApplication() {
+            // Called when a user would be taken out of the application context.
             }
         });
-
-        mAdView = findViewById(R.id.adView);
-        mAdRequest = new AdRequest.Builder().build();
-        mAdView.setAdListener(new AdListener() {
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-
-                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-                param.weight = 8.0f;
-                swipeRefreshLayout.setLayoutParams(param);
-                mAdView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-
-                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-                param.weight = 9.0f;
-                swipeRefreshLayout.setLayoutParams(param);
-                mAdView.setVisibility(View.GONE);
-
-                refreshHandler.removeCallbacks(refreshRunnable);
-                refreshHandler.postDelayed(refreshRunnable, REFRESH_RATE_IN_SECONDS * 1000);
-            }
-        });
-        mAdView.loadAd(mAdRequest);
+        IronSource.loadBanner(banner);
     }
+
+
+//    private void setUpAdView() {
+//
+//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {
+//            }
+//        });
+//
+//        mAdView = findViewById(R.id.adView);
+//        mAdRequest = new AdRequest.Builder().build();
+//        mAdView.setAdListener(new AdListener() {
+//
+//            @Override
+//            public void onAdLoaded() {
+//                super.onAdLoaded();
+//
+//                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+//                param.weight = 8.0f;
+//                swipeRefreshLayout.setLayoutParams(param);
+//                mAdView.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+//                super.onAdFailedToLoad(loadAdError);
+//
+//                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+//                param.weight = 9.0f;
+//                swipeRefreshLayout.setLayoutParams(param);
+//                mAdView.setVisibility(View.GONE);
+//
+//                refreshHandler.removeCallbacks(refreshRunnable);
+//                refreshHandler.postDelayed(refreshRunnable, REFRESH_RATE_IN_SECONDS * 1000);
+//            }
+//        });
+//        mAdView.loadAd(mAdRequest);
+//    }
 
     private void checkForAccessibility() {
 
@@ -397,10 +458,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class RefreshRunnable implements Runnable {
-        @Override
-        public void run() {
-            mAdView.loadAd(mAdRequest);
-        }
-    }
+//    private class RefreshRunnable implements Runnable {
+//        @Override
+//        public void run() {
+//            mAdView.loadAd(mAdRequest);
+//        }
+//    }
 }

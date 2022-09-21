@@ -1,1 +1,8 @@
 include ':app'
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url 'https://android-sdk.is.com/'
+        }
+    }
+}
