@@ -55,15 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     private View popupAccessibilityView;
     private View changeAccessibilityView;
-    private Button logsButton;
     private Button exportButton;
     private Button clearButton;
-
-    private AdView mAdView;
-    private AdRequest mAdRequest;
-    private int REFRESH_RATE_IN_SECONDS = 5;
-//    private final Handler refreshHandler = new Handler();
-//    private final Runnable refreshRunnable = new RefreshRunnable();
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -79,13 +72,11 @@ public class MainActivity extends AppCompatActivity {
         setupView();
 
         checkForAccessibility();
-//        setUpAdView();
         setupIronSourceAdView();
     }
 
     @Override
     protected void onRestart() {
-        mAdView.resume();
         super.onRestart();
         checkForAccessibility();
         updateText();
@@ -100,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         // Pause the AdView.
-        mAdView.pause();
         super.onPause();
         IronSource.onResume(this);
     }
@@ -108,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         // Destroy the AdView.
-        mAdView.destroy();
         super.onDestroy();
     }
 
@@ -159,44 +148,6 @@ public class MainActivity extends AppCompatActivity {
         IronSource.loadBanner(banner);
     }
 
-
-//    private void setUpAdView() {
-//
-//        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-//            @Override
-//            public void onInitializationComplete(InitializationStatus initializationStatus) {
-//            }
-//        });
-//
-//        mAdView = findViewById(R.id.adView);
-//        mAdRequest = new AdRequest.Builder().build();
-//        mAdView.setAdListener(new AdListener() {
-//
-//            @Override
-//            public void onAdLoaded() {
-//                super.onAdLoaded();
-//
-//                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-//                param.weight = 8.0f;
-//                swipeRefreshLayout.setLayoutParams(param);
-//                mAdView.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-//                super.onAdFailedToLoad(loadAdError);
-//
-//                LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-//                param.weight = 9.0f;
-//                swipeRefreshLayout.setLayoutParams(param);
-//                mAdView.setVisibility(View.GONE);
-//
-//                refreshHandler.removeCallbacks(refreshRunnable);
-//                refreshHandler.postDelayed(refreshRunnable, REFRESH_RATE_IN_SECONDS * 1000);
-//            }
-//        });
-//        mAdView.loadAd(mAdRequest);
-//    }
 
     private void checkForAccessibility() {
 
@@ -281,16 +232,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        // Setup Refresh Button
-//          TODO: Either create a list view for all the log files or find a way to redirect to file manager
-//        logsButton = (Button)findViewById(R.id.logsButton);
-////        setOnTouchEffect(refreshButton);
-//        logsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openLogPath();
-//            }
-//        });
 
         // Setup Export Button
         exportButton = (Button)findViewById(R.id.exportButton);
@@ -342,26 +283,7 @@ public class MainActivity extends AppCompatActivity {
         toast = Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG);
         toast.show();
     }
-//    private void setOnTouchEffect(Button button) {
-//
-//        button.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                Button btn = (Button)v;
-//
-//                if (event.getActionMasked() == MotionEvent.ACTION_BUTTON_PRESS) {
-//                    btn.setTextColor(getResources().getColor(R.color.colorButtonBackground));
-//                    btn.setBackgroundColor(getResources().getColor(R.color.colorButtonText));
-//                }
-//                else if (event.getActionMasked() == MotionEvent.ACTION_BUTTON_RELEASE) {
-//                    btn.setTextColor(getResources().getColor(R.color.colorButtonText));
-//                    btn.setBackgroundColor(getResources().getColor(R.color.colorButtonBackground));
-//                }
-//                return false;
-//            }
-//        });
-//    }
+
 
     private void updateText() {
         TextView textView = findViewById(R.id.logs);
@@ -369,99 +291,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static Context getContext() {
-        return getContext();
-    }
-
     private String loadContents() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String logs = preferences.getString("KeyLogger", "No logs found");
         return logs;
     }
 
-    /*
-        Intent operations
-    */
-
-//
-//    public void openLogPath() {
-//
-//        try {
-//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            String path1 = getExternalFilesDir("/").getAbsolutePath() + "/Android/data/com.gpow.androidkeylogger/files/";
-//            String path = getPackageManager().getPackageInfo(getPackageName(), 0).applicationInfo.dataDir;
-//            String path2 = getApplicationInfo().dataDir;
-//            Uri uri = Uri.parse(path);
-//            intent.setDataAndType(uri, "*/*");
-//            startActivity(intent);
-//        }
-//        catch (Exception e) {
-//            Log.e("keyL", "Error occured when opening log path");
-//        }
-//    }
-//
-//    public void openLogPath()
-//    {
-//        // location = "/sdcard/my_folder";
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        Uri mydir = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
-//        intent.setDataAndType(mydir,"application/*");    // or use */*
-//        startActivity(intent);
-//    }
-
-//    private void newOpener() {
-//        Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
-//        Uri uri = Uri.parse(Environment.getDownloadCacheDirectory().getPath().toString());
-//        chooser.addCategory(Intent.CATEGORY_OPENABLE);
-//        chooser.setDataAndType(uri, "*/*");
-//// startActivity(chooser);
-//        try {
-//            startActivityForResult(chooser, SELECT_FILE);
-//        }
-//        catch (android.content.ActivityNotFoundException ex)
-//        {
-//            Toast.makeText(this, "Please install a File Manager.",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-//    private void openLogPath() {
-//        String path = getExternalFilesDir("/").getAbsolutePath();
-//        Uri selectedUri = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(selectedUri, "resource/folder");
-//
-//        if (intent.resolveActivityInfo(getPackageManager(), 0) != null)
-//        {
-//            startActivity(intent);
-//        }
-//        else
-//        {
-//            showToast("Could not find explorer app installed on the device");
-//        }
-//    }
-
-
-    private void shareFile(String filepath) {
-        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-        File fileWithinMyDir = new File(filepath);
-
-        if(fileWithinMyDir.exists()) {
-            intentShareFile.setType("application/pdf");
-            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filepath));
-
-            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
-                    "Sharing File...");
-            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-
-            startActivity(Intent.createChooser(intentShareFile, "Share File"));
-        }
-    }
-
-//    private class RefreshRunnable implements Runnable {
-//        @Override
-//        public void run() {
-//            mAdView.loadAd(mAdRequest);
-//        }
-//    }
 }
