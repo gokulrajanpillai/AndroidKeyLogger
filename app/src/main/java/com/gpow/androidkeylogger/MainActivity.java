@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         /**
          *Ad Units should be in the type of IronSource.Ad_Unit.AdUnitName, example
          */
-        IronSource.init(this, "168b70cc5", IronSource.AD_UNIT.OFFERWALL, IronSource.AD_UNIT.INTERSTITIAL, IronSource.AD_UNIT.REWARDED_VIDEO, IronSource.AD_UNIT.BANNER);
         IntegrationHelper.validateIntegration(this);
         final LinearLayout bannerContainer = findViewById(R.id.bannerContainer);
         IronSourceBannerLayout banner = IronSource.createBanner(this, ISBannerSize.BANNER);
@@ -135,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             // Called when a user would be taken out of the application context.
             }
         });
+        IronSource.init(this, "168b70cc5", IronSource.AD_UNIT.OFFERWALL, IronSource.AD_UNIT.INTERSTITIAL, IronSource.AD_UNIT.REWARDED_VIDEO, IronSource.AD_UNIT.BANNER);
         IronSource.loadBanner(banner);
     }
 
