@@ -188,6 +188,17 @@ public class MainActivity extends AppCompatActivity {
                     editor.apply();
                 }
             });
+
+
+            // Configure DisclaimerDisagreeBtn
+            Button disclaimerDisagreeButton = (Button) findViewById(R.id.disclaimerDisagreeBtn);
+            disclaimerDisagreeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Exit app
+                    finish();
+                }
+            });
         }
     }
 

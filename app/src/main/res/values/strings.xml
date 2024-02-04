@@ -19,7 +19,8 @@
         YOUR USE OF AND YOUR RELIANCE ON ANY INFORMATION ON IS SOLELY AT YOUR OWN RISK. \n\n
 
         By pressing the below button you are confirming that you have read, understood and agree to use the application under these terms \n\n</string>
-    <string name="disclaimer_button">I AGREE</string>
+    <string name="disclaimer_agree_btn">I AGREE</string>
+    <string name="disclaimer_disagree_btn">I DISAGREE</string>
 
     <string name="accessibility_perm">
         Keylogger must be enabled under Accessibility settings to start logging\n\n
