@@ -2,6 +2,7 @@ package com.gpow.androidkeylogger;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -220,16 +222,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        // Setup Refresh Button
-//          TODO: Either create a list view for all the log files or find a way to redirect to file manager
-//        logsButton = (Button)findViewById(R.id.logsButton);
-////        setOnTouchEffect(refreshButton);
-//        logsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openLogPath();
-//            }
-//        });
+        // Setup Logs Button - opens the file manager to browse exported log files
+        logsButton = (Button)findViewById(R.id.logsButton);
+        logsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLogPath();
+            }
+        });
 
         // Setup Export Button
         exportButton = (Button)findViewById(R.id.exportButton);
@@ -322,63 +322,36 @@ public class MainActivity extends AppCompatActivity {
         Intent operations
     */
 
-//
-//    public void openLogPath() {
-//
-//        try {
-//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            String path1 = getExternalFilesDir("/").getAbsolutePath() + "/Android/data/com.gpow.androidkeylogger/files/";
-//            String path = getPackageManager().getPackageInfo(getPackageName(), 0).applicationInfo.dataDir;
-//            String path2 = getApplicationInfo().dataDir;
-//            Uri uri = Uri.parse(path);
-//            intent.setDataAndType(uri, "*/*");
-//            startActivity(intent);
-//        }
-//        catch (Exception e) {
-//            Log.e("keyL", "Error occured when opening log path");
-//        }
-//    }
-//
-//    public void openLogPath()
-//    {
-//        // location = "/sdcard/my_folder";
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        Uri mydir = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
-//        intent.setDataAndType(mydir,"application/*");    // or use */*
-//        startActivity(intent);
-//    }
+    private void openLogPath() {
+        File logsDir = getExternalFilesDir(null);
+        if (logsDir == null) {
+            showToast("Log directory not available");
+            return;
+        }
 
-//    private void newOpener() {
-//        Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
-//        Uri uri = Uri.parse(Environment.getDownloadCacheDirectory().getPath().toString());
-//        chooser.addCategory(Intent.CATEGORY_OPENABLE);
-//        chooser.setDataAndType(uri, "*/*");
-//// startActivity(chooser);
-//        try {
-//            startActivityForResult(chooser, SELECT_FILE);
-//        }
-//        catch (android.content.ActivityNotFoundException ex)
-//        {
-//            Toast.makeText(this, "Please install a File Manager.",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-//    private void openLogPath() {
-//        String path = getExternalFilesDir("/").getAbsolutePath();
-//        Uri selectedUri = Uri.parse(getExternalFilesDir("/").getAbsolutePath());
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(selectedUri, "resource/folder");
-//
-//        if (intent.resolveActivityInfo(getPackageManager(), 0) != null)
-//        {
-//            startActivity(intent);
-//        }
-//        else
-//        {
-//            showToast("Could not find explorer app installed on the device");
-//        }
-//    }
+        try {
+            // Navigate to the logs directory in the system Files app.
+            // getExternalFilesDir() always returns primary external storage,
+            // so "primary" is the correct volume identifier here.
+            String documentId = "primary:Android/data/" + getPackageName() + "/files";
+            Uri dirUri = DocumentsContract.buildDocumentUri(
+                    "com.android.externalstorage.documents", documentId);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(dirUri, DocumentsContract.Document.MIME_TYPE_DIR);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Fallback: open a generic file picker so the user can select a log file
+            try {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("text/plain");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivity(Intent.createChooser(intent, "Select Log File"));
+            } catch (ActivityNotFoundException ex) {
+                showToast("No file manager found on this device");
+            }
+        }
+    }
 
 
     private void shareFile(String filepath) {
